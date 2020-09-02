@@ -1,0 +1,38 @@
+
+############################################################################################################################################
+# Orbisius.com short link redirect rules
+# a quicker way to redirect to posts but has to have my Orbisius Shortlink plugin or whatever it was called
+# L -> L last?
+# R - redirect
+# NC -> case insensitive
+# QSA - query string append
+# END - stops processing other rewrite rules if the rule has matched
+
+RewriteRule ^/?(\d+)/?$ /link/$1 [QSA,L,R=302,END]
+
+# When p123 redirect to the blog post
+RewriteRule ^/?p[\-\_\/]*(\d+)/?$ /?p=$1&utm_source=shortlink&utm_medium=blog_post&utm_content=post-$1&utm_campaign=content_mkt [L,R=302,QSA,NC,END]
+
+# Special cases for Youtube:
+# Case 1: video mentions a blog post link so we'll redirect to that blog post
+RewriteRule ^/?(yt?|youtube|vbox|reddit|soundcloud|sc|[\w]+)[\-\_\/]*(\d+)/?$ /?p=$2&utm_source=social&utm_medium=$1&utm_content=post-$2&utm_campaign=content_mkt [L,R=302,QSA,NC,END]
+
+# Case 2: We've added a link to the description in the video and we'll redirect to the home page. Video ids can be alphanumeric and a dash (-)
+RewriteRule ^/?(yt?|soundcloud|reddit|sc|youtube|vbox)[\-\_\/]*([\w\-]+)/?$ /?utm_source=social&utm_medium=$1&utm_content=$2&utm_campaign=content_mkt [L,R=302,QSA,NC,END]
+
+# When twitter123 or twitter/123 redirect to the blog post but add source that it's youtube.
+RewriteRule ^/?((?:twitter|reddit|slideshare|fb|soundcloud|facebook|insta|instagram|pinterest|linkedin|g?plus|google[\_\-]*plus)|[fgtlir]?)[\-\_\/]*(\d+)/?$ /?p=$2&utm_source=social&utm_medium=$1&utm_content=post-$2&utm_campaign=content_mkt [L,R=302,QSA,NC,END]
+
+# Enables me to have a short link that expands so we can tell where people are coming from
+# e.g. http://orbisius.com/yt
+# e.g. http://orbisius.com/yt-MNOsldDS_pY
+RewriteRule ^/?(yt?|youtube|vbox|video|vimeo|wistia)[\-\_\/]*([\w\-]*)/?$ /?utm_source=$1&utm_medium=social&utm_content=$2&utm_campaign=video_mkt [L,R=302,QSA,NC,END]
+
+# /e123 marketing -> blog post
+RewriteRule ^/?(?:e|e?mail)[\-\_\/]*(\d+)/?$ /?p=$1&utm_source=email&utm_medium=newsletter&utm_content=post-$1&utm_campaign=content_mkt [L,R=302,QSA,NC,END]
+
+# /email marketing to orbisius home page
+RewriteRule ^/?(?:e|e?mail)[\-\_\/]*([\w\-]*)/?$ /?utm_source=email&utm_medium=newsletter&utm_content=$1&utm_campaign=email_mkt [L,R=302,QSA,END]
+
+# /b123 -> redirect to the qs app and include utm params
+RewriteRule ^/?[b][\-\_\/]*(\d*)/?$ /?utm_source=blog&utm_medium=blog_post&utm_content=$1&utm_campaign=content_mkt [L,R=302,QSA,END]
